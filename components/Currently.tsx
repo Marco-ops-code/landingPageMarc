@@ -26,6 +26,9 @@ export function Currently() {
               style={{ "--i": i } as CSSProperties}
             >
               <span className="now-tile-idx">{String(i + 1).padStart(2, "0")}</span>
+              <span className="now-liquid" aria-hidden="true">
+                <span className="now-liquid-core" />
+              </span>
               <span className="now-logo">
                 <ToolLogo name={item.logo} />
               </span>
