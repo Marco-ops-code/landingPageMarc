@@ -1,3 +1,5 @@
+import { assetPath } from "@/lib/base-path";
+
 export const site = {
   name: "Marc-Onel Volcimus",
   firstName: "Marc-Onel",
@@ -8,7 +10,7 @@ export const site = {
   locationLine: "Based in the digital world",
   description:
     "Software developer and cybersecurity practitioner. I build digital experiences, explore technology, and grow through every challenge.",
-  url: "https://marconelvolcimus.com",
+  url: "https://marco-ops-code.github.io/landingPageMarc",
   social: {
     instagram: {
       handle: "marconel.volcimus",
@@ -36,7 +38,7 @@ export const work = [
       "An application designed to generate individual assignments involving matrices and systems of linear equations.",
     cta: "View project",
     href: "https://github.com/Marco-ops-code/TaskGenerator",
-    image: "/images/ig-02-code.png",
+    image: assetPath("/images/ig-02-code.png"),
     alt: "Laptop in the dark with code on screen",
   },
   {
@@ -47,7 +49,7 @@ export const work = [
       "A structured ecosystem for generating, organizing and managing academic tasks.",
     cta: "View project",
     href: "https://github.com/Marco-ops-code/GeneratorMultiTask",
-    image: "/images/ig-06-life.png",
+    image: assetPath("/images/ig-06-life.png"),
     alt: "Desk at blue hour — software workspace",
   },
   {
@@ -58,7 +60,7 @@ export const work = [
       "Hands-on exploration of networking, systems, security concepts and defensive technologies.",
     cta: "View journey",
     href: "#now",
-    image: "/images/ig-04-cyber.png",
+    image: assetPath("/images/ig-04-cyber.png"),
     alt: "Network hardware and cables in a server rack",
   },
   {
@@ -69,34 +71,34 @@ export const work = [
       "Discover the complete portfolio: websites, applications, presentations and selected case studies.",
     cta: "Open portfolio",
     href: site.portfolio,
-    image: "/images/hero-portrait.png",
+    image: assetPath("/images/hero-portrait.png"),
     alt: "Portrait of Marc-Onel Volcimus",
   },
 ] as const;
 
 export const instagramFeed = [
   {
-    src: "/images/ig-01-city.png",
+    src: assetPath("/images/ig-01-city.png"),
     alt: "Night city through rain-streaked glass — lifestyle",
   },
   {
-    src: "/images/ig-02-code.png",
+    src: assetPath("/images/ig-02-code.png"),
     alt: "MacBook in the dark — technology",
   },
   {
-    src: "/images/ig-03-lifestyle.png",
+    src: assetPath("/images/ig-03-lifestyle.png"),
     alt: "Dark still life — lifestyle",
   },
   {
-    src: "/images/ig-04-cyber.png",
+    src: assetPath("/images/ig-04-cyber.png"),
     alt: "Network hardware glow — cybersecurity",
   },
   {
-    src: "/images/ig-05-street.png",
+    src: assetPath("/images/ig-05-street.png"),
     alt: "Wet street at night — lifestyle",
   },
   {
-    src: "/images/ig-06-life.png",
+    src: assetPath("/images/ig-06-life.png"),
     alt: "Blue hour desk — life",
   },
 ] as const;

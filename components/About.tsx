@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/Reveal";
 import { Container, Kicker } from "@/components/ui";
 import { PageSheet } from "@/components/PageSheet";
+import { assetPath } from "@/lib/base-path";
 import { site } from "@/lib/site";
 
 const pillars = [
@@ -59,7 +60,7 @@ export function About() {
               <figure className="about-still">
                 <div className="about-still-frame">
                   <Image
-                    src="/images/about-graduate.png"
+                    src={assetPath("/images/about-graduate.png")}
                     alt={`${site.name} at graduation, holding a computer science diploma`}
                     fill
                     sizes="(min-width: 1024px) 42vw, 100vw"

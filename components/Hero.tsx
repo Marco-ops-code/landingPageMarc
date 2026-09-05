@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { assetPath } from "@/lib/base-path";
 import { site } from "@/lib/site";
 
 const HELLO_WORDS = ["Hello!", "you're", "welcome."] as const;
@@ -55,7 +56,7 @@ export function Hero() {
       <div ref={stage} className="hero-stage">
         <div className="hero-backdrop" aria-hidden="true">
           <Image
-            src="/images/hero-portrait.png"
+            src={assetPath("/images/hero-portrait.png")}
             alt=""
             fill
             priority
@@ -83,7 +84,7 @@ export function Hero() {
           <div className="hero-photo">
             <div className="hero-shot">
               <Image
-                src="/images/hero-portrait.png"
+                src={assetPath("/images/hero-portrait.png")}
                 alt={`${site.name}, professional studio portrait`}
                 fill
                 priority

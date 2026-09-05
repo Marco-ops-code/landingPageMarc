@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/Reveal";
 import { Arrow, Container } from "@/components/ui";
 import { PageSheet } from "@/components/PageSheet";
+import { assetPath } from "@/lib/base-path";
 import { site } from "@/lib/site";
 
 const sides = [
@@ -14,7 +15,7 @@ const sides = [
     href: "#work",
     cta: "Explore projects",
     external: false,
-    image: "/images/ig-02-code.png",
+    image: assetPath("/images/ig-02-code.png"),
     alt: "Laptop in the dark with code on screen",
     position: "52% 40%",
   },
@@ -25,7 +26,7 @@ const sides = [
     href: "#now",
     cta: "Explore my journey",
     external: false,
-    image: "/images/ig-04-cyber.png",
+    image: assetPath("/images/ig-04-cyber.png"),
     alt: "Network hardware and cables in a server rack",
     position: "50% 55%",
   },
@@ -36,7 +37,7 @@ const sides = [
     href: site.social.instagram.url,
     cta: "Instagram",
     external: true,
-    image: "/images/ig-03-lifestyle.png",
+    image: assetPath("/images/ig-03-lifestyle.png"),
     alt: "Leather jacket and watch in low light",
     position: "42% 35%",
   },
