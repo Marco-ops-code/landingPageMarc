@@ -18,6 +18,7 @@ export const site = {
     github: "https://github.com/Marco-ops-code",
     email: "hello@marconelvolcimus.com",
   },
+  portfolio: "https://marco-ops-code.github.io/",
 } as const;
 
 export const navSocial = [
@@ -35,6 +36,8 @@ export const work = [
       "An application designed to generate individual assignments involving matrices and systems of linear equations.",
     cta: "View project",
     href: "https://github.com/Marco-ops-code/TaskGenerator",
+    image: "/images/ig-02-code.png",
+    alt: "Laptop in the dark with code on screen",
   },
   {
     index: "02",
@@ -44,6 +47,8 @@ export const work = [
       "A structured ecosystem for generating, organizing and managing academic tasks.",
     cta: "View project",
     href: "https://github.com/Marco-ops-code/GeneratorMultiTask",
+    image: "/images/ig-06-life.png",
+    alt: "Desk at blue hour — software workspace",
   },
   {
     index: "03",
@@ -53,6 +58,19 @@ export const work = [
       "Hands-on exploration of networking, systems, security concepts and defensive technologies.",
     cta: "View journey",
     href: "#now",
+    image: "/images/ig-04-cyber.png",
+    alt: "Network hardware and cables in a server rack",
+  },
+  {
+    index: "04",
+    title: "Voir le portfolio",
+    tags: "Portfolio / Full stack / Selected work",
+    description:
+      "Discover the complete portfolio: websites, applications, presentations and selected case studies.",
+    cta: "Open portfolio",
+    href: site.portfolio,
+    image: "/images/hero-portrait.png",
+    alt: "Portrait of Marc-Onel Volcimus",
   },
 ] as const;
 
@@ -103,9 +121,8 @@ export const toolkit = [
 ] as const;
 
 export const currently = [
-  "Cybersecurity",
-  "SOC / Blue Team",
-  "Security Operations",
-  "Networking",
-  "Software Engineering",
+  { title: "Cybersecurity", logo: "Cybersecurity" },
+  { title: "Security Operations", logo: "Security Operations" },
+  { title: "Networking", logo: "Networking" },
+  { title: "Software Engineering", logo: "Software Engineering" },
 ] as const;

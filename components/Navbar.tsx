@@ -25,7 +25,7 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 right-0 left-0 z-50 transition-[background,backdrop-filter,border-color] duration-500",
+        "site-nav fixed top-0 right-0 left-0 z-50 transition-[background,backdrop-filter,border-color] duration-500",
         scrolled || open
           ? "border-b border-line bg-navy/78 backdrop-blur-xl"
           : "border-b border-transparent bg-transparent",

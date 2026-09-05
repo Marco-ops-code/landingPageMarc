@@ -1,5 +1,5 @@
-import { Reveal } from "@/components/Reveal";
-import { Arrow, Container } from "@/components/ui";
+import { PageSheet } from "@/components/PageSheet";
+import { Arrow, Kicker } from "@/components/ui";
 import { site } from "@/lib/site";
 
 const links = [
@@ -11,41 +11,65 @@ const links = [
 
 export function Contact() {
   return (
-    <section id="contact" className="relative py-28 md:py-40">
-      <Container>
-        <Reveal>
-          <h2 className="display-title max-w-[9ch] text-[clamp(3.4rem,8vw,7rem)]">
+    <PageSheet id="contact" zIndex={80} last className="is-contact">
+      <div className="contact-page">
+        <div className="contact-copy">
+          <Kicker index="06" label="Contact" />
+          <h2 className="display-title mt-5 max-w-[9ch] text-[clamp(2.6rem,6vw,5.6rem)]">
             Let&apos;s build something meaningful.
           </h2>
-        </Reveal>
-        <Reveal delay={120}>
-          <p className="mt-10 max-w-sm text-lg leading-relaxed text-muted">
+          <p className="contact-lead">
             Have an idea?
             <br />
             Want to collaborate?
             <br />
             Just want to connect?
           </p>
-          <a href={`mailto:${site.social.email}`} className="btn-primary mt-10">
+          <a href={`mailto:${site.social.email}`} className="contact-mail">
             Get in touch <Arrow />
           </a>
-        </Reveal>
-        <div className="mt-24 grid grid-cols-2 gap-y-6 md:max-w-md">
-          {links.map((link, i) => (
-            <Reveal key={link.label} delay={i * 60}>
-              <a
-                href={link.href}
-                {...(link.href.startsWith("http")
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
-                className="font-mono text-[12px] tracking-[0.22em] text-paper/70 uppercase transition-colors hover:text-electric"
-              >
-                {link.label}
-              </a>
-            </Reveal>
-          ))}
+          <ul className="contact-socials">
+            {links.map((link) => (
+              <li key={link.label}>
+                <a
+                  href={link.href}
+                  {...(link.href.startsWith("http")
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
-      </Container>
-    </section>
+
+        <a
+          href={site.portfolio}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="contact-window"
+        >
+          <span className="contact-window-bar">
+            <span className="contact-window-dots" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span>portfolio.exe</span>
+          </span>
+          <span className="contact-window-body">
+            <span className="contact-window-kicker">Open the work</span>
+            <span className="contact-window-title">Portfolio.</span>
+            <span className="contact-window-note">
+              Projects, labs, and the proof behind the brand.
+            </span>
+            <span className="contact-window-go">
+              Enter <Arrow />
+            </span>
+          </span>
+        </a>
+      </div>
+    </PageSheet>
   );
 }

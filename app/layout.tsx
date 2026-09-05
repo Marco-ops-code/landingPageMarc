@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -18,6 +19,13 @@ const instrument = Instrument_Serif({
   weight: "400",
   style: ["normal", "italic"],
   variable: "--font-instrument",
+});
+
+const allura = localFont({
+  src: "./fonts/Allura-Regular.ttf",
+  weight: "400",
+  display: "swap",
+  variable: "--font-allura",
 });
 
 export const metadata: Metadata = {
@@ -82,9 +90,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${geistMono.variable} ${instrument.variable}`}
+      suppressHydrationWarning
+      className={`${geist.variable} ${geistMono.variable} ${instrument.variable} ${allura.variable}`}
     >
-      <body className="relative overflow-x-hidden bg-navy text-paper antialiased">
+      <body
+        suppressHydrationWarning
+        className="relative overflow-x-hidden bg-navy text-paper antialiased"
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
