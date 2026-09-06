@@ -8,6 +8,7 @@ export function usePageRise(
   page: RefObject<HTMLElement | null>,
   cssVar: string,
   navId: string,
+  last = false,
 ) {
   useEffect(() => {
     const trackEl = track.current;
@@ -48,6 +49,10 @@ export function usePageRise(
           );
       const rise = raw >= 0.995 ? 1 : raw * raw * (3 - 2 * raw);
       pageEl.style.setProperty(cssVar, rise.toFixed(4));
+      pageEl.style.setProperty(
+        "--sheet-events",
+        last || rise > 0.26 ? "auto" : "none",
+      );
 
       if (isMobile) {
         clearNavHideSource(navId);
@@ -85,5 +90,5 @@ export function usePageRise(
       mobileQuery.removeEventListener("change", onScroll);
       clearNavHideSource(navId);
     };
-  }, [track, page, cssVar, navId]);
+  }, [track, page, cssVar, navId, last]);
 }

@@ -2,9 +2,11 @@
 
 import {
   useEffect,
+  useRef,
   useState,
   type CSSProperties,
   type MouseEvent,
+  type PointerEvent,
 } from "react";
 import { ToolLogo } from "@/components/ToolLogo";
 import { PageSheet } from "@/components/PageSheet";
@@ -59,6 +61,46 @@ function Corner({ index, label }: { index: number; label: string }) {
 
 export function Toolkit() {
   const [aligned, setAligned] = useState(false);
+  const hand = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+
+  const setLiquid = (x: number, y: number, strength: number, tilt: number) => {
+    const node = hand.current;
+    if (!node) return;
+    node.style.setProperty("--liquid-x", `${x.toFixed(2)}%`);
+    node.style.setProperty("--liquid-y", `${y.toFixed(2)}%`);
+    node.style.setProperty("--liquid-strength", strength.toFixed(3));
+    node.style.setProperty("--swipe-tilt", `${tilt.toFixed(2)}deg`);
+  };
+
+  const pointInHand = (event: PointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    return {
+      x: ((event.clientX - rect.left) / Math.max(1, rect.width)) * 100,
+      y: ((event.clientY - rect.top) / Math.max(1, rect.height)) * 100,
+    };
+  };
+
+  const startLiquid = (event: PointerEvent<HTMLDivElement>) => {
+    drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    const point = pointInHand(event);
+    setLiquid(point.x, point.y, 0.85, 0);
+  };
+
+  const moveLiquid = (event: PointerEvent<HTMLDivElement>) => {
+    const start = drag.current;
+    if (!start || start.id !== event.pointerId) return;
+    const point = pointInHand(event);
+    const tilt = Math.max(-14, Math.min(14, (event.clientX - start.x) * 0.08));
+    setLiquid(point.x, point.y, 1, tilt);
+  };
+
+  const endLiquid = (event: PointerEvent<HTMLDivElement>) => {
+    if (!drag.current || drag.current.id !== event.pointerId) return;
+    drag.current = null;
+    setLiquid(50, 42, 0, 0);
+  };
 
   const selectCard = (event: MouseEvent<HTMLButtonElement>) => {
     if (window.matchMedia("(max-width: 767px)").matches) {
@@ -102,9 +144,15 @@ export function Toolkit() {
 
         <div className="toolkit-table">
           <div
+            ref={hand}
             className={cn("toolkit-hand", aligned && "is-aligned")}
             aria-expanded={aligned}
+            onPointerDown={startLiquid}
+            onPointerMove={moveLiquid}
+            onPointerUp={endLiquid}
+            onPointerCancel={endLiquid}
           >
+            <span className="toolkit-liquid" aria-hidden="true" />
             {toolkit.map((group, i) => (
               <article
                 key={group.label}
@@ -127,6 +175,7 @@ export function Toolkit() {
                 <div className="toolkit-card-lift" aria-hidden="true">
                   <div className="toolkit-card-flip">
                     <div className="toolkit-card-front">
+                      <span className="toolkit-card-sheen" />
                       <Corner index={i} label={group.label} />
                       <div className="toolkit-card-body">
                         <p className="toolkit-card-title">{group.label}</p>

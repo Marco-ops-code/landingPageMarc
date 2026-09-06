@@ -19,7 +19,7 @@ export function PageSheet({
 }) {
   const track = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLElement>(null);
-  usePageRise(track, page, "--page-rise", id);
+  usePageRise(track, page, "--page-rise", id, last);
 
   return (
     <div

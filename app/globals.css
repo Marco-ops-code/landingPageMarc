@@ -556,12 +556,17 @@ body {
 
 .toolkit-hand {
   --align: 0;
+  --liquid-x: 50%;
+  --liquid-y: 42%;
+  --liquid-strength: 0;
+  --swipe-tilt: 0deg;
   position: relative;
   width: min(96vw, 1120px);
   height: min(58dvh, 520px);
   transform-style: preserve-3d;
   transform: rotateX(calc(6deg * var(--page-rise) * (1 - var(--align))));
   transform-origin: 50% 52%;
+  touch-action: pan-y pinch-zoom;
   transition: --align 0.85s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -569,8 +574,45 @@ body {
   --align: 1;
 }
 
+.toolkit-liquid {
+  pointer-events: none;
+  position: absolute;
+  z-index: 8;
+  top: var(--liquid-y);
+  left: var(--liquid-x);
+  width: min(42vw, 18rem);
+  aspect-ratio: 1;
+  border-radius: 58% 42% 56% 44% / 46% 54% 46% 54%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(245, 247, 255, 0.34), transparent 26%),
+    radial-gradient(circle at 68% 70%, rgba(79, 107, 255, 0.46), transparent 48%);
+  filter: blur(18px);
+  opacity: var(--liquid-strength);
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%) rotate(var(--swipe-tilt));
+  transition:
+    opacity 0.35s ease,
+    top 0.12s linear,
+    left 0.12s linear,
+    transform 0.2s ease;
+}
+
+.toolkit-card-sheen {
+  pointer-events: none;
+  position: absolute;
+  inset: -20%;
+  z-index: 6;
+  background: radial-gradient(
+    circle at var(--liquid-x) var(--liquid-y),
+    rgba(245, 247, 255, 0.22),
+    transparent 36%
+  );
+  opacity: calc(var(--liquid-strength) * 0.9);
+  mix-blend-mode: screen;
+}
+
 .toolkit-card {
-  --deal: clamp(0, calc((var(--page-rise) - var(--i) * 0.11) * 1.55), 1);
+  --deal: clamp(0, calc((var(--page-rise) - 0.12 - var(--i) * 0.16) * 1.85), 1);
   --shift-d: var(--shift);
   --fan-d: var(--fan);
   --cw: min(42vw, 210px);
@@ -858,8 +900,7 @@ body {
   position: relative;
   z-index: 4;
   opacity: var(--page-rise);
-  transform: translate3d(0, calc((1 - var(--page-rise)) * 1.5rem), 0);
-  filter: blur(calc((1 - var(--page-rise)) * 7px));
+  transform: translate3d(0, calc((1 - var(--page-rise)) * 1.2rem), 0);
 }
 
 .now-foot {
@@ -945,8 +986,8 @@ body {
     inset 1px 0 0 rgba(245, 247, 255, 0.1),
     inset 0 -1px 0 rgba(79, 107, 255, 0.14),
     0 24px 52px rgba(0, 0, 0, 0.27);
-  -webkit-backdrop-filter: blur(30px) saturate(145%);
-  backdrop-filter: blur(30px) saturate(145%);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  backdrop-filter: blur(16px) saturate(130%);
   transform:
     translate3d(
       calc((1 - var(--tile-reveal)) * var(--enter-x)),
@@ -956,17 +997,11 @@ body {
     rotateX(calc((1 - var(--tile-reveal)) * -14deg))
     scale(calc(0.76 + var(--tile-reveal) * 0.24));
   opacity: var(--tile-reveal);
-  filter: blur(calc((1 - var(--tile-reveal)) * 12px));
-  clip-path: inset(
-    calc((1 - var(--tile-reveal)) * 17%)
-    round calc(1.25rem + (1 - var(--tile-reveal)) * 5rem)
-  );
   transition:
     border-color 0.45s ease,
     box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     background 0.45s ease;
-  will-change: transform, opacity, filter, clip-path;
+  will-change: transform, opacity;
 }
 
 .now-tile:nth-child(2) {
@@ -1180,7 +1215,6 @@ body {
       inset 0 -1px 0 rgba(79, 107, 255, 0.24),
       0 30px 70px rgba(0, 0, 0, 0.34),
       0 0 42px rgba(79, 107, 255, 0.11);
-    transform: translate3d(0, -6px, 0) rotateX(1.5deg) scale(1.006);
   }
 
   .now-tile:hover .now-liquid {
@@ -1359,16 +1393,22 @@ body {
   color: rgba(245, 247, 255, 0.7);
 }
 
-.contact-gate {
-  --open: calc(var(--page-rise) * 0.92);
+.contact-plane {
   display: grid;
   place-items: center;
   min-height: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
   opacity: calc(0.28 + var(--page-rise) * 0.72);
   transform: translate3d(0, calc((1 - var(--page-rise)) * 10%), 0);
 }
 
-.contact-gate-stage {
+.contact-plane-pad {
   position: relative;
   display: flex;
   width: min(100%, 36rem);
@@ -1383,7 +1423,21 @@ body {
     inset 0 0 0 1px rgba(245, 247, 255, 0.04);
 }
 
-.contact-gate-body {
+.contact-plane-wake {
+  pointer-events: none;
+  position: absolute;
+  inset: 18% 12% 28%;
+  background:
+    repeating-linear-gradient(
+      118deg,
+      transparent 0 14px,
+      rgba(79, 107, 255, 0.12) 14px 15px
+    );
+  mask-image: linear-gradient(118deg, transparent 8%, #000 42%, transparent 86%);
+  opacity: 0.55;
+}
+
+.contact-plane-body {
   position: relative;
   z-index: 1;
   display: flex;
@@ -1395,7 +1449,32 @@ body {
   text-align: center;
 }
 
-.contact-gate-kicker {
+.contact-plane-svg {
+  width: min(42%, 9.5rem);
+  height: auto;
+  margin-bottom: 1.1rem;
+  overflow: visible;
+  filter: drop-shadow(0 18px 28px rgba(8, 13, 26, 0.45));
+  transform-origin: 62% 38%;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.contact-plane-wing,
+.contact-plane-fold {
+  fill: rgba(245, 247, 255, 0.92);
+}
+
+.contact-plane-fold {
+  fill: rgba(79, 107, 255, 0.88);
+}
+
+.contact-plane-crease {
+  fill: none;
+  stroke: rgba(8, 13, 26, 0.28);
+  stroke-width: 1.4;
+}
+
+.contact-plane-kicker {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.64rem;
   letter-spacing: 0.24em;
@@ -1403,7 +1482,7 @@ body {
   color: var(--electric);
 }
 
-.contact-gate-title {
+.contact-plane-title {
   display: block;
   margin-top: 0.7rem;
   font-family: var(--font-display), Georgia, serif;
@@ -1412,7 +1491,7 @@ body {
   line-height: 0.92;
 }
 
-.contact-gate-note {
+.contact-plane-note {
   display: block;
   margin-top: 0.85rem;
   max-width: 20ch;
@@ -1421,7 +1500,7 @@ body {
   color: var(--muted);
 }
 
-.contact-gate-go {
+.contact-plane-go {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
@@ -1432,71 +1511,39 @@ body {
   color: var(--paper);
 }
 
-.contact-gate-doors {
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-}
-
-.contact-gate-door {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  background:
-    linear-gradient(90deg, rgba(245, 247, 255, 0.04), transparent 18%),
-    repeating-linear-gradient(
-      180deg,
-      rgba(245, 247, 255, 0.035) 0 1px,
-      transparent 1px 18px
-    ),
-    #0c1428;
-  box-shadow: inset 0 0 0 1px rgba(79, 107, 255, 0.16);
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.contact-gate-door.is-left {
-  left: 0;
-  transform: translate3d(calc(var(--open) * -102%), 0, 0);
-  border-right: 1px solid rgba(79, 107, 255, 0.28);
-}
-
-.contact-gate-door.is-right {
-  right: 0;
-  transform: translate3d(calc(var(--open) * 102%), 0, 0);
-  border-left: 1px solid rgba(79, 107, 255, 0.28);
-}
-
-.contact-gate-seam {
-  position: absolute;
-  top: 8%;
-  bottom: 8%;
-  left: 50%;
-  z-index: 3;
-  width: 1px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    var(--electric) 18%,
-    var(--electric) 82%,
-    transparent
-  );
-  opacity: calc(1 - var(--open));
-  box-shadow: 0 0 18px rgba(79, 107, 255, 0.55);
-  transform: translateX(-50%);
-}
-
 @media (hover: hover) and (pointer: fine) {
-  .contact-gate:hover {
-    --open: 1;
-  }
-
-  .contact-gate:hover .contact-gate-stage {
+  .contact-plane:hover .contact-plane-pad {
     border-color: rgba(79, 107, 255, 0.55);
     box-shadow:
       0 28px 80px rgba(0, 0, 0, 0.5),
       0 0 48px rgba(79, 107, 255, 0.2);
+  }
+
+  .contact-plane:hover .contact-plane-svg {
+    transform: translate3d(0.4rem, -0.55rem, 0) rotate(-8deg);
+  }
+}
+
+.contact-plane.is-flying .contact-plane-svg {
+  animation: plane-takeoff 0.92s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.contact-plane.is-flying .contact-plane-body > :not(.contact-plane-svg) {
+  opacity: 0.18;
+  transition: opacity 0.35s ease;
+}
+
+@keyframes plane-takeoff {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(-8deg) scale(1);
+    opacity: 1;
+  }
+  28% {
+    transform: translate3d(-8%, 14%, 0) rotate(-26deg) scale(0.96);
+  }
+  100% {
+    transform: translate3d(128%, -132%, 0) rotate(22deg) scale(0.42);
+    opacity: 0;
   }
 }
 
@@ -1530,7 +1577,7 @@ body {
 
 .ig-reel-copy {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   display: flex;
   flex-direction: column;
   opacity: var(--page-rise);
@@ -1538,6 +1585,8 @@ body {
 }
 
 .ig-reel-follow {
+  position: relative;
+  z-index: 5;
   display: inline-flex;
   width: fit-content;
   align-items: center;
@@ -1615,14 +1664,15 @@ body {
     1
   );
   position: relative;
+  z-index: 2;
   display: flex;
   min-height: 0;
   flex-direction: column;
   color: var(--paper);
   opacity: var(--ig-card-rise);
   transform: translate3d(0, calc((1 - var(--ig-card-rise)) * 1.8rem), 0);
-  filter: blur(calc((1 - var(--ig-card-rise)) * 8px));
-  will-change: transform, opacity, filter;
+  pointer-events: auto;
+  will-change: transform, opacity;
 }
 
 .ig-frame-photo {
@@ -1790,6 +1840,7 @@ body {
   position: relative;
   margin-top: -180vh;
   height: 440vh;
+  pointer-events: none;
 }
 
 .page-track.is-last {
@@ -1798,9 +1849,11 @@ body {
 
 .page-sheet {
   --page-rise: 0;
+  --sheet-events: auto;
   position: sticky;
   top: 0;
   min-height: 100dvh;
+  pointer-events: var(--sheet-events);
   transform: translateY(calc((1 - var(--page-rise)) * 100dvh));
   background: var(--navy);
   box-shadow: 0 -40px 120px rgba(0, 0, 0, 0.55);
@@ -2625,7 +2678,8 @@ html[data-nav-hidden] .site-nav {
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     padding: 1.1rem 1.15rem 1.6rem;
-    opacity: var(--page-rise);
+    touch-action: pan-x pinch-zoom;
+    opacity: 1;
     transform: none;
   }
 
@@ -2635,7 +2689,7 @@ html[data-nav-hidden] .site-nav {
 
   .toolkit-card,
   .toolkit-hand.is-aligned .toolkit-card {
-    --deal: 1;
+    --deal: clamp(0, calc((var(--page-rise) - var(--i) * 0.1) * 1.45), 1);
     --cw: auto;
     position: relative;
     top: auto;
@@ -2647,7 +2701,9 @@ html[data-nav-hidden] .site-nav {
     aspect-ratio: 5 / 7;
     margin: 0;
     translate: none;
-    transform: rotate(calc((var(--i) - 1.5) * 1.6deg));
+    opacity: var(--deal);
+    transform: rotate(calc((var(--i) - 1.5) * 1.6deg))
+      translate3d(0, calc((1 - var(--deal)) * 18%), 0);
     scroll-snap-align: center;
     scroll-snap-stop: always;
   }
@@ -2666,7 +2722,7 @@ html[data-nav-hidden] .site-nav {
   }
 
   .toolkit-card-flip {
-    transform: none;
+    transform: rotateY(calc((1 - var(--deal)) * 180deg));
   }
 
   .toolkit-card-front,
@@ -2676,8 +2732,9 @@ html[data-nav-hidden] .site-nav {
     min-height: 0;
   }
 
-  .toolkit-card-back {
-    display: none;
+  .toolkit-liquid {
+    width: 14rem;
+    filter: blur(16px);
   }
 
   .toolkit-card-front {
@@ -2758,9 +2815,14 @@ html[data-nav-hidden] .site-nav {
   .now-tile {
     border-radius: 1.05rem;
     padding: 0.75rem 0.55rem 0.85rem;
-    -webkit-backdrop-filter: blur(12px) saturate(125%);
-    backdrop-filter: blur(12px) saturate(125%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    backdrop-filter: blur(10px) saturate(120%);
     will-change: opacity, transform;
+  }
+
+  .now-tile::after {
+    animation: none;
+    opacity: 0.28;
   }
 
   .now-liquid {
@@ -2820,21 +2882,20 @@ html[data-nav-hidden] .site-nav {
     padding: 0.65rem 0.9rem;
   }
 
-  .contact-gate {
-    --open: 0.88;
+  .contact-plane {
     width: 100%;
   }
 
-  .contact-gate-stage {
+  .contact-plane-pad {
     width: 100%;
     min-height: min(58svh, 26rem);
   }
 
-  .contact-gate-title {
+  .contact-plane-title {
     font-size: clamp(2.4rem, 12vw, 3.4rem);
   }
 
-  .contact-gate-go {
+  .contact-plane-go {
     min-height: 2.75rem;
   }
 
@@ -2961,9 +3022,9 @@ html[data-nav-hidden] .site-nav {
     box-shadow: 0 0 0 2px var(--electric);
   }
 
-  .contact-gate:active,
-  .contact-gate:focus-visible {
-    --open: 1;
+  .contact-plane:active .contact-plane-svg,
+  .contact-plane:focus-visible .contact-plane-svg {
+    transform: translate3d(0.3rem, -0.4rem, 0) rotate(-6deg);
   }
 
   .contact-socials a:active,
@@ -2992,8 +3053,8 @@ html[data-nav-hidden] .site-nav {
   .now-tile,
   .now-foot,
   .contact-copy,
-  .contact-gate,
-  .contact-gate-door,
+  .contact-plane,
+  .contact-plane-svg,
   .contact-mail,
   .ig-frame,
   .ig-reel-copy,
@@ -3022,8 +3083,8 @@ html[data-nav-hidden] .site-nav {
     stroke-dashoffset: 0;
   }
 
-  .contact-gate {
-    --open: 1;
+  .contact-plane.is-flying .contact-plane-svg {
+    animation: none;
   }
 
   .ig-frame-develop {
