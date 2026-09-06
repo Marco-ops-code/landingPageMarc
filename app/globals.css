@@ -1744,6 +1744,42 @@ html[data-nav-hidden] .site-nav {
   will-change: opacity, transform;
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-layout {
+    position: relative;
+  }
+
+  .hero-copy {
+    z-index: 12;
+  }
+
+  .hero-photo {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    min-height: 0;
+    width: 100%;
+    opacity: calc(0.42 + var(--hero-reveal) * 0.58);
+    transform: none;
+  }
+
+  .hero-photo::after {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgba(8, 13, 26, 0.96) 6%, rgba(8, 13, 26, 0.62) 42%, transparent 72%),
+      linear-gradient(to right, rgba(8, 13, 26, 0.78), transparent 58%);
+    pointer-events: none;
+  }
+
+  .hero-shot,
+  .hero-photo-veil {
+    inset: 0;
+  }
+}
+
 @media (min-width: 1024px) {
   .hero-photo {
     min-height: 100%;
