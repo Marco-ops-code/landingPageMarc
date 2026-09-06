@@ -24,15 +24,42 @@ export function Hero() {
     }
 
     let frame = 0;
+    const setProgress = (raw: number) => {
+      const reveal = raw * raw * (3 - 2 * raw);
+      stageEl.style.setProperty("--hero-reveal", reveal.toFixed(4));
+      stageEl.style.setProperty("--hero-hello", (1 - reveal).toFixed(4));
+    };
+
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      const introStart = performance.now() + 850;
+      const introDuration = 900;
+
+      const playIntro = (now: number) => {
+        const timed = Math.min(
+          1,
+          Math.max(0, (now - introStart) / introDuration),
+        );
+        const scrolled = Math.max(0, -pinEl.getBoundingClientRect().top);
+        const scrollDriven = Math.min(
+          1,
+          scrolled / Math.max(1, window.innerHeight * 0.18),
+        );
+        const raw = Math.max(timed, scrollDriven);
+
+        setProgress(raw);
+        if (raw < 1) frame = requestAnimationFrame(playIntro);
+      };
+
+      frame = requestAnimationFrame(playIntro);
+      return () => cancelAnimationFrame(frame);
+    }
 
     const update = () => {
       const scrolled = Math.max(0, -pinEl.getBoundingClientRect().top);
       const revealTrack = window.innerHeight;
       const raw =
         revealTrack <= 0 ? 1 : Math.min(1, scrolled / revealTrack);
-      const reveal = raw * raw * (3 - 2 * raw);
-      stageEl.style.setProperty("--hero-reveal", reveal.toFixed(4));
-      stageEl.style.setProperty("--hero-hello", (1 - reveal).toFixed(4));
+      setProgress(raw);
     };
 
     const onScroll = () => {

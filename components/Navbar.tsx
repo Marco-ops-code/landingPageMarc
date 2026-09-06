@@ -4,6 +4,15 @@ import { useEffect, useState } from "react";
 import { navSocial, site } from "@/lib/site";
 import { cn } from "@/lib/cn";
 
+const sectionLinks = [
+  { label: "About", href: "#about", index: "01" },
+  { label: "Work", href: "#work", index: "02" },
+  { label: "Beyond", href: "#instagram", index: "03" },
+  { label: "Toolkit", href: "#toolkit", index: "04" },
+  { label: "Now", href: "#now", index: "05" },
+  { label: "Contact", href: "#contact", index: "06" },
+] as const;
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -16,11 +25,29 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = open ? "hidden" : previousOverflow;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
+
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const closeOnDesktop = () => {
+      if (desktop.matches) setOpen(false);
+    };
+
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
 
   return (
     <header
@@ -31,7 +58,7 @@ export function Navbar() {
           : "border-b border-transparent bg-transparent",
       )}
     >
-      <nav className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-5 md:px-10 lg:px-14">
+      <nav className="site-nav-inner mx-auto flex max-w-[1280px] items-center justify-between px-6 py-5 md:px-10 lg:px-14">
         <a href="#main" className="leading-[0.92] tracking-[0.18em]">
           <span className="block font-mono text-[11px] text-paper">
             {site.firstName.toUpperCase()}
@@ -48,7 +75,7 @@ export function Navbar() {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-[11px] tracking-[0.22em] text-paper/70 uppercase transition-colors hover:text-electric"
+                className="nav-social-link font-mono text-[11px] tracking-[0.22em] text-paper/70 uppercase transition-colors"
               >
                 {item.label}
               </a>
@@ -58,8 +85,9 @@ export function Navbar() {
 
         <button
           type="button"
-          className="relative h-10 w-10 md:hidden"
+          className="site-nav-toggle relative h-10 w-10 md:hidden"
           aria-expanded={open}
+          aria-controls="mobile-navigation"
           aria-label={open ? "Close menu" : "Open menu"}
           onClick={() => setOpen((value) => !value)}
         >
@@ -79,8 +107,28 @@ export function Navbar() {
       </nav>
 
       {open ? (
-        <div className="border-t border-line bg-navy/96 px-6 py-10 backdrop-blur-xl md:hidden">
-          <ul className="space-y-6">
+        <div
+          id="mobile-navigation"
+          className="site-nav-panel border-t border-line bg-navy/96 px-6 py-8 backdrop-blur-xl md:hidden"
+        >
+          <p className="font-mono text-[10px] tracking-[0.26em] text-paper/40 uppercase">
+            Navigate
+          </p>
+          <ul className="site-nav-sections mt-4">
+            {sectionLinks.map((item) => (
+              <li key={item.href}>
+                <a href={item.href} onClick={() => setOpen(false)}>
+                  <span>{item.index}</span>
+                  <span>{item.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-8 border-t border-line pt-6 font-mono text-[10px] tracking-[0.26em] text-paper/40 uppercase">
+            Elsewhere
+          </p>
+          <ul className="site-nav-socials mt-3">
             {navSocial.map((item) => (
               <li key={item.label}>
                 <a
@@ -94,15 +142,6 @@ export function Navbar() {
                 </a>
               </li>
             ))}
-            <li>
-              <a
-                href="#work"
-                className="font-mono text-sm tracking-[0.22em] text-electric uppercase"
-                onClick={() => setOpen(false)}
-              >
-                Explore my work
-              </a>
-            </li>
           </ul>
         </div>
       ) : null}

@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useState,
+  type CSSProperties,
+  type MouseEvent,
+} from "react";
 import { ToolLogo } from "@/components/ToolLogo";
 import { PageSheet } from "@/components/PageSheet";
 import { Kicker } from "@/components/ui";
@@ -55,6 +60,21 @@ function Corner({ index, label }: { index: number; label: string }) {
 export function Toolkit() {
   const [aligned, setAligned] = useState(false);
 
+  const selectCard = (event: MouseEvent<HTMLButtonElement>) => {
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      event.currentTarget.closest<HTMLElement>(".toolkit-card")?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+      return;
+    }
+
+    setAligned(true);
+  };
+
   useEffect(() => {
     if (!aligned) return;
 
@@ -102,7 +122,7 @@ export function Toolkit() {
                   className="toolkit-card-hit"
                   aria-pressed={aligned}
                   aria-label={`${group.label}: ${group.items.join(", ")}`}
-                  onClick={() => setAligned(true)}
+                  onClick={selectCard}
                 />
                 <div className="toolkit-card-lift" aria-hidden="true">
                   <div className="toolkit-card-flip">
@@ -130,6 +150,7 @@ export function Toolkit() {
             ))}
           </div>
         </div>
+        <p className="toolkit-swipe-hint">Swipe through the stack</p>
       </div>
     </PageSheet>
   );

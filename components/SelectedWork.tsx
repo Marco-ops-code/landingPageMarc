@@ -1,7 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+} from "react";
 import { PageSheet } from "@/components/PageSheet";
 import { Arrow, Kicker } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -37,16 +43,41 @@ export function SelectedWork() {
   const [active, setActive] = useState(0);
   const [leaving, setLeaving] = useState<number | null>(null);
   const [dir, setDir] = useState<"next" | "prev">("next");
+  const dragStart = useRef<{ x: number; y: number } | null>(null);
 
-  const go = (index: number, direction: "next" | "prev") => {
-    if (index === active) return;
-    setDir(direction);
-    setLeaving(active);
-    setActive(index);
+  const go = useCallback(
+    (index: number, direction: "next" | "prev") => {
+      if (index === active) return;
+      setDir(direction);
+      setLeaving(active);
+      setActive(index);
+    },
+    [active],
+  );
+
+  const step = useCallback(
+    (delta: -1 | 1) => {
+      go(
+        (active + delta + work.length) % work.length,
+        delta === 1 ? "next" : "prev",
+      );
+    },
+    [active, go],
+  );
+
+  const startSwipe = (event: PointerEvent<HTMLDivElement>) => {
+    dragStart.current = { x: event.clientX, y: event.clientY };
   };
 
-  const step = (delta: -1 | 1) => {
-    go((active + delta + work.length) % work.length, delta === 1 ? "next" : "prev");
+  const finishSwipe = (event: PointerEvent<HTMLDivElement>) => {
+    const start = dragStart.current;
+    dragStart.current = null;
+    if (!start) return;
+
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    if (Math.abs(deltaX) < 44 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+    step(deltaX < 0 ? 1 : -1);
   };
 
   useEffect(() => {
@@ -62,7 +93,7 @@ export function SelectedWork() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active]);
+  }, [step]);
 
   return (
     <PageSheet id="work" zIndex={72} className="is-work">
@@ -84,7 +115,18 @@ export function SelectedWork() {
             <Chevron dir="prev" />
           </button>
 
-          <div className="work-platter" data-dir={dir}>
+          <div
+            className="work-platter"
+            data-dir={dir}
+            role="group"
+            aria-roledescription="carousel"
+            aria-label="Selected project"
+            onPointerDown={startSwipe}
+            onPointerUp={finishSwipe}
+            onPointerCancel={() => {
+              dragStart.current = null;
+            }}
+          >
             {work.map((item, i) => {
               const state =
                 i === active ? "is-active" : i === leaving ? "is-leaving" : "is-wait";
@@ -119,7 +161,7 @@ export function SelectedWork() {
                       </p>
                       <a
                         href={item.href}
-                        className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-paper uppercase transition-colors hover:text-electric"
+                        className="work-orb-cta mt-6 inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-paper uppercase transition-colors"
                         {...(item.href.startsWith("http")
                           ? { target: "_blank", rel: "noopener noreferrer" }
                           : {})}
@@ -163,6 +205,7 @@ export function SelectedWork() {
             </button>
           ))}
         </div>
+        <p className="work-swipe-hint">Swipe or use the controls</p>
       </div>
     </PageSheet>
   );

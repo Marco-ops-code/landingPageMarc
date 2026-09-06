@@ -53,11 +53,16 @@ export function ThreeSides() {
                 Three sides. One identity.
               </h2>
             </Reveal>
+            <p className="identity-swipe-hint">Swipe to explore</p>
           </Container>
 
-          <div className="identity-triptych">
+          <div className="identity-triptych" aria-label="Three sides of my work">
             {sides.map((side, i) => (
-              <Reveal key={side.index} className="h-full" delay={i * 90}>
+              <Reveal
+                key={side.index}
+                className="side-panel-wrap h-full"
+                delay={i * 90}
+              >
                 <a
                   href={side.href}
                   {...(side.external

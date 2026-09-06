@@ -24,12 +24,35 @@ export function usePageRise(
     let frame = 0;
 
     const update = () => {
-      const top = trackEl.getBoundingClientRect().top;
-      const riseTrack = window.innerHeight * 1.8;
-      const raw =
-        riseTrack <= 0 ? 1 : Math.min(1, Math.max(0, -top / riseTrack));
+      const viewport = Math.max(
+        window.innerHeight,
+        document.documentElement.clientHeight,
+      );
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      const raw = isMobile
+        ? (() => {
+            const rect = pageEl.getBoundingClientRect();
+            const start = viewport * 0.92;
+            const end = Math.min(viewport * 0.28, 220);
+            return Math.min(
+              1,
+              Math.max(0, (start - rect.top) / Math.max(1, start - end)),
+            );
+          })()
+        : Math.min(
+            1,
+            Math.max(
+              0,
+              -trackEl.getBoundingClientRect().top / Math.max(1, viewport * 1.8),
+            ),
+          );
       const rise = raw >= 0.995 ? 1 : raw * raw * (3 - 2 * raw);
       pageEl.style.setProperty(cssVar, rise.toFixed(4));
+
+      if (isMobile) {
+        clearNavHideSource(navId);
+        return;
+      }
 
       const pageRect = pageEl.getBoundingClientRect();
       const fade = 140;
@@ -48,14 +71,18 @@ export function usePageRise(
       frame = requestAnimationFrame(update);
     };
 
+    const mobileQuery = window.matchMedia("(max-width: 767px)");
+
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+    mobileQuery.addEventListener("change", onScroll);
 
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      mobileQuery.removeEventListener("change", onScroll);
       clearNavHideSource(navId);
     };
   }, [track, page, cssVar, navId]);

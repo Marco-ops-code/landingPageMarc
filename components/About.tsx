@@ -16,13 +16,13 @@ const pillars = [
 export function About() {
   return (
     <PageSheet id="about" zIndex={60}>
-      <Container className="py-16 md:py-20 lg:py-24">
+      <Container className="about-page py-16 md:py-20 lg:py-24">
           <Reveal>
             <Kicker index="01" label="About" />
           </Reveal>
 
-          <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 xl:gap-20">
-            <div className="flex min-h-0 flex-col">
+          <div className="about-layout mt-8 grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 xl:gap-20">
+            <div className="about-copy flex min-h-0 flex-col">
               <Reveal delay={80}>
                 <h2 className="display-title text-[clamp(2.4rem,5.4vw,5rem)]">
                   More than a
@@ -31,7 +31,7 @@ export function About() {
                 </h2>
               </Reveal>
               <Reveal delay={160}>
-                <div className="mt-8 max-w-md space-y-5 text-[1.05rem] leading-relaxed text-muted">
+                <div className="about-body mt-8 max-w-md space-y-5 text-[1.05rem] leading-relaxed text-muted">
                   <p>
                     I&apos;m a computer science graduate interested in software
                     development, cybersecurity and digital experiences.
@@ -42,7 +42,7 @@ export function About() {
                   </p>
                 </div>
               </Reveal>
-              <div className="mt-10 grid grid-cols-3 gap-6 border-t border-line pt-8 lg:mt-auto lg:pt-12">
+              <div className="about-pillars mt-10 grid grid-cols-3 gap-6 border-t border-line pt-8 lg:mt-auto lg:pt-12">
                 {pillars.map((pillar, i) => (
                   <Reveal key={pillar.index} delay={i * 90}>
                     <p className="font-mono text-[11px] tracking-[0.28em] text-electric">

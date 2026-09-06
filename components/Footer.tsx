@@ -2,7 +2,7 @@ import { site } from "@/lib/site";
 
 export function Footer() {
   return (
-    <footer className="relative z-[82] border-t border-line py-12">
+    <footer className="site-footer relative z-[82] border-t border-line py-12">
       <div className="mx-auto flex max-w-[1280px] flex-col gap-8 px-6 md:flex-row md:items-end md:justify-between md:px-10 lg:px-14">
         <div>
           <p className="font-mono text-[11px] tracking-[0.22em] uppercase">
