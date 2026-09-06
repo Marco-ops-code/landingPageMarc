@@ -71,7 +71,7 @@ export const work = [
       "Discover the complete portfolio: websites, applications, presentations and selected case studies.",
     cta: "Open portfolio",
     href: site.portfolio,
-    image: assetPath("/images/hero-portrait.png"),
+    image: assetPath("/images/hero-portrait.jpg"),
     alt: "Portrait of Marc-Onel Volcimus",
   },
 ] as const;

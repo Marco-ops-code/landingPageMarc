@@ -83,12 +83,12 @@ export function Hero() {
       <div ref={stage} className="hero-stage">
         <div className="hero-backdrop" aria-hidden="true">
           <Image
-            src={assetPath("/images/hero-portrait.png")}
+            src={assetPath("/images/hero-portrait.jpg")}
             alt=""
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[70%_18%]"
+            className="object-cover object-[50%_18%]"
           />
         </div>
 
@@ -111,12 +111,12 @@ export function Hero() {
           <div className="hero-photo">
             <div className="hero-shot">
               <Image
-                src={assetPath("/images/hero-portrait.png")}
+                src={assetPath("/images/hero-portrait.jpg")}
                 alt={`${site.name}, professional studio portrait`}
                 fill
                 priority
                 sizes="(min-width: 1024px) 52vw, 100vw"
-                className="object-cover object-[68%_12%]"
+                className="object-cover object-[50%_12%]"
               />
             </div>
             <div className="hero-photo-veil pointer-events-none" aria-hidden="true">
