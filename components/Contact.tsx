@@ -48,23 +48,23 @@ export function Contact() {
           href={site.portfolio}
           target="_blank"
           rel="noopener noreferrer"
-          className="contact-disc"
+          className="contact-gate"
         >
-          <span className="contact-disc-face">
-            <span className="contact-disc-grooves" aria-hidden="true" />
-            <span className="contact-disc-veil" aria-hidden="true" />
-            <svg className="contact-disc-ring" viewBox="0 0 100 100" aria-hidden="true">
-              <circle cx="50" cy="50" r="47.5" />
-            </svg>
-            <span className="contact-disc-body">
-              <span className="contact-disc-kicker">Open the work</span>
-              <span className="contact-disc-title">Portfolio.</span>
-              <span className="contact-disc-note">
+          <span className="contact-gate-stage">
+            <span className="contact-gate-body">
+              <span className="contact-gate-kicker">Open the work</span>
+              <span className="contact-gate-title">Portfolio.</span>
+              <span className="contact-gate-note">
                 Projects, labs, and the proof behind the brand.
               </span>
-              <span className="contact-disc-go">
+              <span className="contact-gate-go">
                 Enter <Arrow />
               </span>
+            </span>
+            <span className="contact-gate-doors" aria-hidden="true">
+              <span className="contact-gate-door is-left" />
+              <span className="contact-gate-door is-right" />
+              <span className="contact-gate-seam" />
             </span>
           </span>
         </a>
