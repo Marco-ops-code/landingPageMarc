@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { assetPath } from "@/lib/base-path";
 import { site } from "@/lib/site";
 
@@ -31,8 +31,9 @@ export function Hero() {
     };
 
     if (window.matchMedia("(max-width: 767px)").matches) {
-      const introStart = performance.now() + 850;
-      const introDuration = 900;
+      // Write finishes ~4.2s; hold readable greeting, then fade.
+      const introStart = performance.now() + 9800;
+      const introDuration = 3200;
 
       const playIntro = (now: number) => {
         const timed = Math.min(
@@ -145,9 +146,12 @@ export function Hero() {
                   <span
                     key={`${word}-${letterIndex}`}
                     className="hero-hello-letter"
-                    style={{
-                      animationDelay: `${0.18 + (preceding + letterIndex) * 0.075}s`,
-                    }}
+                    style={
+                      {
+                        "--letter-i": preceding + letterIndex,
+                        animationDelay: `${0.22 + (preceding + letterIndex) * 0.09}s`,
+                      } as CSSProperties
+                    }
                   >
                     {letter}
                   </span>
