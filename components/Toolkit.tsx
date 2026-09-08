@@ -10,35 +10,33 @@ export function Toolkit() {
       <div className="toolkit-page">
         <div className="toolkit-copy">
           <Kicker index="04" label="Toolkit" />
-          <h2 className="display-title mt-4 max-w-[9ch] text-[clamp(2.4rem,6vw,5.2rem)]">
+          <h2 className="display-title mt-4 max-w-[9ch] text-[clamp(2.2rem,5.4vw,4.6rem)]">
             The stack.
           </h2>
         </div>
 
-        <div className="toolkit-table">
-          <div className="toolkit-grid" aria-label="Tool groups">
-            {toolkit.map((group, i) => (
-              <article
-                key={group.label}
-                className="toolkit-card"
-                style={{ "--i": i } as CSSProperties}
-              >
-                <span className="toolkit-card-sheen" aria-hidden="true" />
-                <header className="toolkit-card-head">
-                  <span>{String(i + 1).padStart(2, "0")}</span>
-                  <p>{group.label}</p>
-                </header>
-                <ul>
-                  {group.items.map((item) => (
-                    <li key={item}>
-                      <ToolLogo name={item} />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
+        <div className="toolkit-grid" aria-label="Tool groups">
+          {toolkit.map((group, i) => (
+            <article
+              key={group.label}
+              className="toolkit-card"
+              style={{ "--i": i } as CSSProperties}
+            >
+              <span className="toolkit-card-sheen" aria-hidden="true" />
+              <header className="toolkit-card-head">
+                <span>{String(i + 1).padStart(2, "0")}</span>
+                <p>{group.label}</p>
+              </header>
+              <ul>
+                {group.items.map((item) => (
+                  <li key={item}>
+                    <ToolLogo name={item} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
         </div>
       </div>
     </PageSheet>
