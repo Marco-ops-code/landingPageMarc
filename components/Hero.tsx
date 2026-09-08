@@ -30,45 +30,33 @@ export function Hero() {
       stageEl.style.setProperty("--hero-hello", (1 - reveal).toFixed(4));
     };
 
-    if (window.matchMedia("(max-width: 767px)").matches) {
-      // Write finishes ~4.2s; hold readable greeting, then fade.
-      const introStart = performance.now() + 9800;
-      const introDuration = 3200;
+    const mobile = window.matchMedia("(max-width: 767px)").matches;
+    // Write finishes ~2.4s desktop / ~4.2s mobile; hold, then fade out alone.
+    const introStart = performance.now() + (mobile ? 7200 : 4200);
+    const introDuration = mobile ? 2800 : 2200;
 
-      const playIntro = (now: number) => {
-        const timed = Math.min(
-          1,
-          Math.max(0, (now - introStart) / introDuration),
-        );
-        const scrolled = Math.max(0, -pinEl.getBoundingClientRect().top);
-        const scrollDriven = Math.min(
-          1,
-          scrolled / Math.max(1, window.innerHeight * 0.18),
-        );
-        const raw = Math.max(timed, scrollDriven);
-
-        setProgress(raw);
-        if (raw < 1) frame = requestAnimationFrame(playIntro);
-      };
-
-      frame = requestAnimationFrame(playIntro);
-      return () => cancelAnimationFrame(frame);
-    }
-
-    const update = () => {
+    const playIntro = (now: number) => {
+      const timed = Math.min(
+        1,
+        Math.max(0, (now - introStart) / introDuration),
+      );
       const scrolled = Math.max(0, -pinEl.getBoundingClientRect().top);
-      const revealTrack = window.innerHeight;
-      const raw =
-        revealTrack <= 0 ? 1 : Math.min(1, scrolled / revealTrack);
+      const scrollDriven = Math.min(
+        1,
+        scrolled / Math.max(1, window.innerHeight * (mobile ? 0.18 : 0.55)),
+      );
+      const raw = Math.max(timed, scrollDriven);
+
       setProgress(raw);
+      if (raw < 1) frame = requestAnimationFrame(playIntro);
     };
 
     const onScroll = () => {
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(update);
+      frame = requestAnimationFrame(playIntro);
     };
 
-    update();
+    frame = requestAnimationFrame(playIntro);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
 

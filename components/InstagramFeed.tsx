@@ -14,15 +14,13 @@ import { cn } from "@/lib/cn";
 import { instagramFeed, site } from "@/lib/site";
 
 const moments = [
-  { label: "Night", note: "City lights through the rain." },
   { label: "Technology", note: "Late hours, a glowing keyboard." },
-  { label: "Style", note: "Quiet details off-screen." },
   { label: "Security", note: "Hardware, cables, the lab." },
-  { label: "Street", note: "Wet asphalt after midnight." },
   { label: "Life", note: "Blue hour at the desk." },
 ] as const;
 
 const STORY_MS = 7000;
+const TOTAL = moments.length;
 
 export function InstagramFeed() {
   const [active, setActive] = useState(0);
@@ -33,7 +31,7 @@ export function InstagramFeed() {
   const photo = instagramFeed[active];
 
   const go = useCallback((index: number) => {
-    setActive((index + instagramFeed.length) % instagramFeed.length);
+    setActive((index + TOTAL) % TOTAL);
   }, []);
 
   useEffect(() => {
@@ -77,7 +75,7 @@ export function InstagramFeed() {
             journey.
           </h2>
           <p className="mt-6 max-w-xs font-mono text-[10px] tracking-[0.22em] text-paper/50 uppercase">
-            Technology · Lifestyle · Creativity · Life
+            Technology · Security · Life
           </p>
 
           <ol className="ig-chapters" aria-label="Journey chapters">
@@ -149,7 +147,7 @@ export function InstagramFeed() {
 
             <div className="ig-feature-meta">
               <p className="ig-feature-index">
-                {String(active + 1).padStart(2, "0")} / 06
+                {String(active + 1).padStart(2, "0")} / 0{TOTAL}
               </p>
               <h3 className="ig-feature-title">{moment.label}</h3>
               <p className="ig-feature-note">{moment.note}</p>

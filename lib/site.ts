@@ -78,24 +78,12 @@ export const work = [
 
 export const instagramFeed = [
   {
-    src: assetPath("/images/ig-01-city.png"),
-    alt: "Night city through rain-streaked glass — lifestyle",
-  },
-  {
     src: assetPath("/images/ig-02-code.png"),
     alt: "MacBook in the dark — technology",
   },
   {
-    src: assetPath("/images/ig-03-lifestyle.png"),
-    alt: "Dark still life — lifestyle",
-  },
-  {
     src: assetPath("/images/ig-04-cyber.png"),
     alt: "Network hardware glow — cybersecurity",
-  },
-  {
-    src: assetPath("/images/ig-05-street.png"),
-    alt: "Wet street at night — lifestyle",
   },
   {
     src: assetPath("/images/ig-06-life.png"),
