@@ -16,16 +16,14 @@ export const site = {
       handle: "marc.mus.ing",
       url: "https://www.instagram.com/marc.mus.ing",
     },
-    linkedin: "https://www.linkedin.com/in/marc-onel-volcimus",
     github: "https://github.com/Marco-ops-code",
-    email: "hello@marconelvolcimus.com",
+    email: "marconelvolcimus079@gmail.com",
   },
   portfolio: "https://marco-ops-code.github.io/",
 } as const;
 
 export const navSocial = [
   { label: "Instagram", href: site.social.instagram.url },
-  { label: "LinkedIn", href: site.social.linkedin },
   { label: "GitHub", href: site.social.github },
 ] as const;
 

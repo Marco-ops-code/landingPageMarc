@@ -7,7 +7,6 @@ import { site } from "@/lib/site";
 
 const links = [
   { label: "Instagram", href: site.social.instagram.url },
-  { label: "LinkedIn", href: site.social.linkedin },
   { label: "GitHub", href: site.social.github },
   { label: "Email", href: `mailto:${site.social.email}` },
 ] as const;

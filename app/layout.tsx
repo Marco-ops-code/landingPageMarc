@@ -77,7 +77,6 @@ const personJsonLd = {
   email: site.social.email,
   sameAs: [
     site.social.instagram.url,
-    site.social.linkedin,
     site.social.github,
   ],
   knowsAbout: ["Software Development", "Cybersecurity", "Networking"],
