@@ -114,7 +114,7 @@ export const toolkit = [
   },
   {
     label: "Security",
-    items: ["Cybersecurity", "Networking", "Security fundamentals"],
+    items: ["Cybersecurity", "Security Operations", "Security fundamentals"],
   },
   {
     label: "Tools",
