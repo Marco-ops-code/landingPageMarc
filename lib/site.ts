@@ -13,8 +13,8 @@ export const site = {
   url: "https://marco-ops-code.github.io/landingPageMarc",
   social: {
     instagram: {
-      handle: "marconel.volcimus",
-      url: "https://instagram.com/marconel.volcimus",
+      handle: "marc.mus.ing",
+      url: "https://www.instagram.com/marc.mus.ing",
     },
     linkedin: "https://www.linkedin.com/in/marc-onel-volcimus",
     github: "https://github.com/Marco-ops-code",
