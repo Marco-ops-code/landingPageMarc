@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { LegalNotice } from "@/components/LegalNotice";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -104,6 +105,7 @@ export default function RootLayout({
         <div className="ambient" aria-hidden="true" />
         <div className="grain" aria-hidden="true" />
         {children}
+        <LegalNotice />
       </body>
     </html>
   );
