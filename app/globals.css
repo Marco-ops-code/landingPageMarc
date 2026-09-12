@@ -8,6 +8,10 @@
   --glass: rgba(255, 255, 255, 0.06);
   --muted: rgba(245, 247, 255, 0.62);
   --line: rgba(245, 247, 255, 0.1);
+  /* How far the footer rises over the pinned contact sheet. It doubles as the
+     footer height and as the strip contact keeps clear, so the two must never
+     drift apart. */
+  --footer-lift: 9rem;
 }
 
 @theme inline {
@@ -1425,7 +1429,9 @@ body {
     grid-template-rows: minmax(0, 1fr);
     align-items: stretch;
     gap: 2.4rem;
-    padding: 2rem 2.5rem 1.75rem;
+    /* Keeps the bottom strip free for the footer that comes to rest over this
+       sheet, so the call to action never ends up hidden behind it. */
+    padding: 2rem 2.5rem calc(1.75rem + var(--footer-lift));
   }
 
   .contact-copy {
@@ -1840,15 +1846,16 @@ body {
 
   /* The footer rises over the pinned contact sheet the same way a sheet does,
      but only by its own height, so it comes to rest instead of covering the
-     whole section. The overlap must equal the footer height exactly, otherwise
-     the contact track outlasts the footer and leaves a gap at the end of the
-     page — hence the fixed min-height paired with the same negative margin. */
+     whole section. The overlap must equal the footer height exactly: any less
+     and the contact track outlasts the footer, which unpins the sheet at the
+     very end; any more and the page ends on a gap. */
   .site-footer {
     display: flex;
-    min-height: 15rem;
+    min-height: var(--footer-lift);
     flex-direction: column;
     justify-content: center;
-    margin-top: -15rem;
+    padding-block: 1rem;
+    margin-top: calc(-1 * var(--footer-lift));
     background: var(--navy);
     box-shadow: 0 -30px 80px rgba(0, 0, 0, 0.5);
   }
@@ -2938,8 +2945,12 @@ html[data-nav-hidden] .site-nav {
     will-change: auto;
   }
 
+  /* Cancels both the footer overlap and the strip contact reserves for it. */
+  :root {
+    --footer-lift: 0rem;
+  }
+
   .site-footer {
-    margin-top: 0;
     box-shadow: none;
   }
 
