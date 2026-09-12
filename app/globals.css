@@ -1811,13 +1811,12 @@ body {
 
 .page-track {
   position: relative;
-  margin-top: -180vh;
-  height: 440vh;
+  height: 185vh;
   pointer-events: none;
 }
 
 .page-track.is-last {
-  height: 280vh;
+  height: 128vh;
 }
 
 .page-sheet {
@@ -1827,29 +1826,24 @@ body {
   top: 0;
   min-height: 100dvh;
   pointer-events: var(--sheet-events);
-  transform: translate3d(0, calc((1 - var(--page-rise)) * 100dvh), 0);
   background: var(--navy);
-  box-shadow: 0 -40px 120px rgba(0, 0, 0, 0.55);
-  backface-visibility: hidden;
-  will-change: transform;
+  box-shadow: 0 -28px 80px rgba(0, 0, 0, 0.42);
 }
 
 @media (min-width: 768px) {
   .page-track {
-    margin-top: -180vh;
-    height: 440vh;
+    height: 185vh;
   }
 
   .page-track.is-last {
-    height: 280vh;
+    height: 128vh;
   }
 
   .page-sheet {
     position: sticky;
     top: 0;
     min-height: 100dvh;
-    transform: translate3d(0, calc((1 - var(--page-rise)) * 100dvh), 0);
-    will-change: transform;
+    transform: none;
   }
 
   .page-sheet.is-triptych {
