@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { subscribeScrollFrame } from "@/lib/scroll-frame";
 import { navSocial, site } from "@/lib/site";
 import { cn } from "@/lib/cn";
 
@@ -18,10 +19,10 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 18);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return subscribeScrollFrame(() => {
+      const next = window.scrollY > 18;
+      setScrolled((current) => (current === next ? current : next));
+    });
   }, []);
 
   useEffect(() => {

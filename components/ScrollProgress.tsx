@@ -1,19 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
+import { subscribeScrollFrame } from "@/lib/scroll-frame";
 
 export function ScrollProgress() {
-  const [progress, setProgress] = useState(0);
+  const bar = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onScroll = () => {
-      const height = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(height > 0 ? window.scrollY / height : 0);
-    };
+    const el = bar.current;
+    if (!el) return;
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    let last = "";
+    return subscribeScrollFrame(() => {
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = height > 0 ? window.scrollY / height : 0;
+      const next = progress.toFixed(4);
+      if (next === last) return;
+      last = next;
+      el.style.transform = `scaleX(${next})`;
+    });
   }, []);
 
   return (
@@ -22,8 +27,9 @@ export function ScrollProgress() {
       aria-hidden="true"
     >
       <div
+        ref={bar}
         className="h-full origin-left bg-electric"
-        style={{ transform: `scaleX(${progress})` }}
+        style={{ transform: "scaleX(0)" }}
       />
     </div>
   );

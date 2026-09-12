@@ -2,6 +2,7 @@
 
 import { useEffect, type RefObject } from "react";
 import { clearNavHideSource, setNavHideSource } from "@/lib/nav-hide";
+import { subscribeScrollFrame } from "@/lib/scroll-frame";
 
 export function usePageRise(
   track: RefObject<HTMLElement | null>,
@@ -15,21 +16,23 @@ export function usePageRise(
     const pageEl = page.current;
     if (!trackEl || !pageEl) return;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reduced.matches) {
       pageEl.style.setProperty(cssVar, "1");
       clearNavHideSource(navId);
       return;
     }
 
-    let frame = 0;
+    const mobileQuery = window.matchMedia("(max-width: 767px)");
+    let lastRise = "";
+    let lastEvents = "";
 
     const update = () => {
       const viewport = Math.max(
         window.innerHeight,
         document.documentElement.clientHeight,
       );
-      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      const isMobile = mobileQuery.matches;
       const raw = isMobile
         ? (() => {
             const rect = pageEl.getBoundingClientRect();
@@ -44,15 +47,21 @@ export function usePageRise(
             1,
             Math.max(
               0,
-              -trackEl.getBoundingClientRect().top / Math.max(1, viewport * 1.8),
+              -trackEl.getBoundingClientRect().top / Math.max(1, viewport * 1.35),
             ),
           );
-      const rise = raw >= 0.995 ? 1 : raw * raw * (3 - 2 * raw);
-      pageEl.style.setProperty(cssVar, rise.toFixed(4));
-      pageEl.style.setProperty(
-        "--sheet-events",
-        last || rise > 0.26 ? "auto" : "none",
-      );
+      const rise = raw >= 0.997 ? 1 : raw;
+      const nextRise = rise.toFixed(4);
+      if (nextRise !== lastRise) {
+        lastRise = nextRise;
+        pageEl.style.setProperty(cssVar, nextRise);
+      }
+
+      const events = last || rise > 0.26 ? "auto" : "none";
+      if (events !== lastEvents) {
+        lastEvents = events;
+        pageEl.style.setProperty("--sheet-events", events);
+      }
 
       if (isMobile) {
         clearNavHideSource(navId);
@@ -71,23 +80,9 @@ export function usePageRise(
       setNavHideSource(navId, navHide);
     };
 
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(update);
-    };
-
-    const mobileQuery = window.matchMedia("(max-width: 767px)");
-
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    mobileQuery.addEventListener("change", onScroll);
-
+    const unsubscribe = subscribeScrollFrame(update);
     return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      mobileQuery.removeEventListener("change", onScroll);
+      unsubscribe();
       clearNavHideSource(navId);
     };
   }, [track, page, cssVar, navId, last]);

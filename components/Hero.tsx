@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, type CSSProperties } from "react";
 import { assetPath } from "@/lib/base-path";
+import { subscribeScrollFrame } from "@/lib/scroll-frame";
 import { site } from "@/lib/site";
 
 const HELLO_WORDS = ["Hello!", "you're", "welcome."] as const;
@@ -24,18 +25,21 @@ export function Hero() {
     }
 
     let frame = 0;
+    let lastReveal = "";
     const setProgress = (raw: number) => {
-      const reveal = raw * raw * (3 - 2 * raw);
-      stageEl.style.setProperty("--hero-reveal", reveal.toFixed(4));
+      const reveal = raw >= 0.997 ? 1 : raw;
+      const next = reveal.toFixed(4);
+      if (next === lastReveal) return;
+      lastReveal = next;
+      stageEl.style.setProperty("--hero-reveal", next);
       stageEl.style.setProperty("--hero-hello", (1 - reveal).toFixed(4));
     };
 
     const mobile = window.matchMedia("(max-width: 767px)").matches;
-    // Write finishes ~2.4s desktop / ~4.2s mobile; hold, then fade out alone.
     const introStart = performance.now() + (mobile ? 7200 : 4200);
     const introDuration = mobile ? 2800 : 2200;
 
-    const playIntro = (now: number) => {
+    const update = (now = performance.now()) => {
       const timed = Math.min(
         1,
         Math.max(0, (now - introStart) / introDuration),
@@ -43,27 +47,26 @@ export function Hero() {
       const scrolled = Math.max(0, -pinEl.getBoundingClientRect().top);
       const scrollDriven = Math.min(
         1,
-        scrolled / Math.max(1, window.innerHeight * (mobile ? 0.18 : 0.55)),
+        scrolled / Math.max(1, window.innerHeight * (mobile ? 0.18 : 0.4)),
       );
       const raw = Math.max(timed, scrollDriven);
-
       setProgress(raw);
-      if (raw < 1) frame = requestAnimationFrame(playIntro);
+      return raw;
     };
 
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(playIntro);
+    const playIntro = (now: number) => {
+      if (update(now) < 1) frame = requestAnimationFrame(playIntro);
     };
 
     frame = requestAnimationFrame(playIntro);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    const unsubscribe = subscribeScrollFrame(() => {
+      cancelAnimationFrame(frame);
+      if (update() < 1) frame = requestAnimationFrame(playIntro);
+    });
 
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      unsubscribe();
     };
   }, []);
 
