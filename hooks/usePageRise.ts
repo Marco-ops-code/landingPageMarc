@@ -8,11 +8,16 @@ function clamp01(value: number) {
   return Math.min(1, Math.max(0, value));
 }
 
+function trackProgress(track: HTMLElement, viewport: number) {
+  const rect = track.getBoundingClientRect();
+  const travel = Math.max(1, rect.height - viewport);
+  return clamp01(-rect.top / travel);
+}
+
 function revealProgress(page: HTMLElement, viewport: number) {
   const rect = page.getBoundingClientRect();
-  const start = viewport * 0.88;
-  const end = viewport * 0.22;
-  return clamp01((start - rect.top) / Math.max(1, start - end));
+  const travel = Math.max(1, Math.min(rect.height, viewport));
+  return clamp01((viewport - rect.top) / travel);
 }
 
 export function usePageRise(
@@ -46,9 +51,7 @@ export function usePageRise(
       const isMobile = mobileQuery.matches;
       const rise = isMobile
         ? revealProgress(pageEl, viewport)
-        : clamp01(
-            -trackEl.getBoundingClientRect().top / Math.max(1, viewport * 1.7),
-          );
+        : trackProgress(trackEl, viewport);
 
       const nextRise = (rise >= 0.997 ? 1 : rise).toFixed(4);
       if (nextRise !== lastRise) {
