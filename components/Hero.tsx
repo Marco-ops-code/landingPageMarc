@@ -24,50 +24,39 @@ export function Hero() {
       return;
     }
 
-    let frame = 0;
+    let current = 0;
     let lastReveal = "";
-    const setProgress = (raw: number) => {
-      const reveal = raw >= 0.997 ? 1 : raw;
-      const next = reveal.toFixed(4);
-      if (next === lastReveal) return;
-      lastReveal = next;
-      stageEl.style.setProperty("--hero-reveal", next);
-      stageEl.style.setProperty("--hero-hello", (1 - reveal).toFixed(4));
-    };
-
     const mobile = window.matchMedia("(max-width: 767px)").matches;
     const introStart = performance.now() + (mobile ? 7200 : 4200);
     const introDuration = mobile ? 2800 : 2200;
+    const tau = mobile ? 0.14 : 0.22;
 
-    const update = (now = performance.now()) => {
+    const unsubscribe = subscribeScrollFrame((dt) => {
       const timed = Math.min(
         1,
-        Math.max(0, (now - introStart) / introDuration),
+        Math.max(0, (performance.now() - introStart) / introDuration),
       );
       const scrolled = Math.max(0, -pinEl.getBoundingClientRect().top);
       const scrollDriven = Math.min(
         1,
-        scrolled / Math.max(1, window.innerHeight * (mobile ? 0.18 : 0.4)),
+        scrolled / Math.max(1, window.innerHeight * (mobile ? 0.22 : 0.7)),
       );
-      const raw = Math.max(timed, scrollDriven);
-      setProgress(raw);
-      return raw;
-    };
+      const target = Math.max(timed, scrollDriven);
+      current += (target - current) * (1 - Math.exp(-dt / tau));
+      if (Math.abs(target - current) < 0.0015) current = target;
 
-    const playIntro = (now: number) => {
-      if (update(now) < 1) frame = requestAnimationFrame(playIntro);
-    };
+      const reveal = current >= 0.997 ? 1 : current;
+      const next = reveal.toFixed(4);
+      if (next !== lastReveal) {
+        lastReveal = next;
+        stageEl.style.setProperty("--hero-reveal", next);
+        stageEl.style.setProperty("--hero-hello", (1 - reveal).toFixed(4));
+      }
 
-    frame = requestAnimationFrame(playIntro);
-    const unsubscribe = subscribeScrollFrame(() => {
-      cancelAnimationFrame(frame);
-      if (update() < 1) frame = requestAnimationFrame(playIntro);
+      return reveal < 1 || Math.abs(target - current) > 0.001;
     });
 
-    return () => {
-      cancelAnimationFrame(frame);
-      unsubscribe();
-    };
+    return unsubscribe;
   }, []);
 
   return (

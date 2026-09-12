@@ -4,6 +4,10 @@ import { useEffect, type RefObject } from "react";
 import { clearNavHideSource, setNavHideSource } from "@/lib/nav-hide";
 import { subscribeScrollFrame } from "@/lib/scroll-frame";
 
+function easeInOut(raw: number) {
+  return raw * raw * (3 - 2 * raw);
+}
+
 export function usePageRise(
   track: RefObject<HTMLElement | null>,
   page: RefObject<HTMLElement | null>,
@@ -24,10 +28,11 @@ export function usePageRise(
     }
 
     const mobileQuery = window.matchMedia("(max-width: 767px)");
+    let current = Number(pageEl.style.getPropertyValue(cssVar)) || 0;
     let lastRise = "";
     let lastEvents = "";
 
-    const update = () => {
+    const update = (dt: number) => {
       const viewport = Math.max(
         window.innerHeight,
         document.documentElement.clientHeight,
@@ -47,10 +52,17 @@ export function usePageRise(
             1,
             Math.max(
               0,
-              -trackEl.getBoundingClientRect().top / Math.max(1, viewport * 1.35),
+              -trackEl.getBoundingClientRect().top / Math.max(1, viewport * 1.85),
             ),
           );
-      const rise = raw >= 0.997 ? 1 : raw;
+
+      const target = easeInOut(raw);
+      const tau = isMobile ? 0.12 : 0.2;
+      current += (target - current) * (1 - Math.exp(-dt / tau));
+
+      if (Math.abs(target - current) < 0.0015) current = target;
+
+      const rise = current >= 0.997 ? 1 : current;
       const nextRise = rise.toFixed(4);
       if (nextRise !== lastRise) {
         lastRise = nextRise;
@@ -65,19 +77,20 @@ export function usePageRise(
 
       if (isMobile) {
         clearNavHideSource(navId);
-        return;
+      } else {
+        const pageRect = pageEl.getBoundingClientRect();
+        const fade = 140;
+        let navHide = 0;
+        if (pageRect.bottom > 0 && pageRect.top < fade) {
+          navHide =
+            pageRect.top <= 0
+              ? Math.min(1, pageRect.bottom / fade)
+              : Math.min(1, (fade - pageRect.top) / fade);
+        }
+        setNavHideSource(navId, navHide);
       }
 
-      const pageRect = pageEl.getBoundingClientRect();
-      const fade = 140;
-      let navHide = 0;
-      if (pageRect.bottom > 0 && pageRect.top < fade) {
-        navHide =
-          pageRect.top <= 0
-            ? Math.min(1, pageRect.bottom / fade)
-            : Math.min(1, (fade - pageRect.top) / fade);
-      }
-      setNavHideSource(navId, navHide);
+      return Math.abs(target - current) > 0.001;
     };
 
     const unsubscribe = subscribeScrollFrame(update);
