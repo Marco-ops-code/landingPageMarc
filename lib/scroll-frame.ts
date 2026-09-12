@@ -1,9 +1,17 @@
 export type ScrollFrameListener = (dt: number) => boolean | void;
 
 const listeners = new Set<ScrollFrameListener>();
+const writes = new Set<() => void>();
 let frame = 0;
 let lastTime = 0;
 let bound = false;
+
+/** Defers a DOM write to the end of the frame so listeners only ever measure a
+ *  clean layout, never one invalidated by a sibling's write. */
+export function queueScrollWrite(write: () => void) {
+  writes.add(write);
+  wake();
+}
 
 function loop(now: number) {
   const dt = lastTime ? Math.min(0.05, (now - lastTime) / 1000) : 1 / 60;
@@ -13,6 +21,9 @@ function loop(now: number) {
   listeners.forEach((listener) => {
     if (listener(dt)) again = true;
   });
+
+  writes.forEach((write) => write());
+  writes.clear();
 
   if (again) {
     frame = requestAnimationFrame(loop);

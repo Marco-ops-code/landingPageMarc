@@ -1117,20 +1117,20 @@ body {
   }
 }
 
+/* Transform only: animating border-radius here repainted four blurred,
+   shadowed blobs on every frame, which halved the frame rate of the whole
+   page for as long as this section existed. */
 @keyframes now-liquid-morph {
   0%,
   100% {
-    border-radius: 53% 47% 61% 39% / 42% 58% 42% 58%;
     transform: translate(calc(-50% + var(--liquid-x)), calc(-50% + var(--liquid-y)))
       rotate(var(--liquid-turn)) scale(1);
   }
   34% {
-    border-radius: 39% 61% 44% 56% / 58% 39% 61% 42%;
     transform: translate(calc(-50% + var(--liquid-x)), calc(-50% + var(--liquid-y)))
       rotate(calc(var(--liquid-turn) + 7deg)) scale(1.035, 0.97);
   }
   68% {
-    border-radius: 61% 39% 52% 48% / 38% 56% 44% 62%;
     transform: translate(calc(-50% + var(--liquid-x)), calc(-50% + var(--liquid-y)))
       rotate(calc(var(--liquid-turn) - 5deg)) scale(0.98, 1.04);
   }
@@ -1809,10 +1809,13 @@ body {
   height: 360vh;
 }
 
+/* The sheet rises over exactly one viewport (the negative margin overlaps the
+   previous track), then stays pinned for the rest of its track. Both phases are
+   native sticky positioning, so no script drives the vertical movement. */
 .page-track {
   position: relative;
-  margin-top: -160vh;
-  height: 320vh;
+  margin-top: -100vh;
+  height: 260vh;
   pointer-events: none;
 }
 
@@ -1822,38 +1825,32 @@ body {
 
 .page-sheet {
   --page-rise: 0;
-  --sheet-events: auto;
   position: sticky;
   top: 0;
   min-height: 100dvh;
-  pointer-events: var(--sheet-events);
-  transform: translate3d(0, calc((1 - var(--page-rise)) * 100dvh), 0);
+  pointer-events: auto;
   background: var(--navy);
   box-shadow: 0 -40px 120px rgba(0, 0, 0, 0.55);
-  backface-visibility: hidden;
-  will-change: transform;
 }
 
 @media (min-width: 768px) {
-  .page-track {
-    margin-top: -160vh;
-    height: 320vh;
-  }
-
-  .page-track.is-last {
-    height: 200vh;
-  }
-
-  .page-sheet {
-    position: sticky;
-    top: 0;
-    min-height: 100dvh;
-    transform: translate3d(0, calc((1 - var(--page-rise)) * 100dvh), 0);
-    will-change: transform;
-  }
-
   .page-sheet.is-triptych {
     overflow: hidden;
+  }
+
+  /* The footer rises over the pinned contact sheet the same way a sheet does,
+     but only by its own height, so it comes to rest instead of covering the
+     whole section. The overlap must equal the footer height exactly, otherwise
+     the contact track outlasts the footer and leaves a gap at the end of the
+     page — hence the fixed min-height paired with the same negative margin. */
+  .site-footer {
+    display: flex;
+    min-height: 15rem;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: -15rem;
+    background: var(--navy);
+    box-shadow: 0 -30px 80px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -2939,6 +2936,11 @@ html[data-nav-hidden] .site-nav {
     transform: none;
     box-shadow: none;
     will-change: auto;
+  }
+
+  .site-footer {
+    margin-top: 0;
+    box-shadow: none;
   }
 
   .site-nav {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { subscribeScrollFrame } from "@/lib/scroll-frame";
+import { queueScrollWrite, subscribeScrollFrame } from "@/lib/scroll-frame";
 
 export function ScrollProgress() {
   const bar = useRef<HTMLDivElement>(null);
@@ -11,13 +11,19 @@ export function ScrollProgress() {
     if (!el) return;
 
     let last = "";
+    let pending = "";
+    const apply = () => {
+      el.style.transform = `scaleX(${pending})`;
+    };
+
     return subscribeScrollFrame(() => {
       const height = document.documentElement.scrollHeight - window.innerHeight;
       const progress = height > 0 ? window.scrollY / height : 0;
       const next = progress.toFixed(4);
       if (next === last) return;
       last = next;
-      el.style.transform = `scaleX(${next})`;
+      pending = next;
+      queueScrollWrite(apply);
     });
   }, []);
 

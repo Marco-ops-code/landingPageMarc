@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, type CSSProperties } from "react";
 import { assetPath } from "@/lib/base-path";
-import { subscribeScrollFrame } from "@/lib/scroll-frame";
+import { queueScrollWrite, subscribeScrollFrame } from "@/lib/scroll-frame";
 import { site } from "@/lib/site";
 
 const HELLO_WORDS = ["Hello!", "you're", "welcome."] as const;
@@ -26,6 +26,11 @@ export function Hero() {
 
     let current = 0;
     let lastReveal = "";
+    let pendingReveal = 0;
+    const applyReveal = () => {
+      stageEl.style.setProperty("--hero-reveal", pendingReveal.toFixed(4));
+      stageEl.style.setProperty("--hero-hello", (1 - pendingReveal).toFixed(4));
+    };
     const mobile = window.matchMedia("(max-width: 767px)").matches;
     const introStart = performance.now() + (mobile ? 7200 : 4200);
     const introDuration = mobile ? 2800 : 2200;
@@ -49,8 +54,8 @@ export function Hero() {
       const next = reveal.toFixed(4);
       if (next !== lastReveal) {
         lastReveal = next;
-        stageEl.style.setProperty("--hero-reveal", next);
-        stageEl.style.setProperty("--hero-hello", (1 - reveal).toFixed(4));
+        pendingReveal = reveal;
+        queueScrollWrite(applyReveal);
       }
 
       return reveal < 1 || Math.abs(target - current) > 0.001;

@@ -1,10 +1,12 @@
+import { queueScrollWrite } from "@/lib/scroll-frame";
+
 const sources = new Map<string, number>();
 let lastHide = "";
 let lastHidden = false;
 
-function apply() {
+function flush() {
   const hide = sources.size === 0 ? 0 : Math.max(0, ...sources.values());
-  const next = hide.toFixed(4);
+  const next = hide.toFixed(3);
   const hidden = hide > 0.85;
   if (next === lastHide && hidden === lastHidden) return;
 
@@ -17,10 +19,10 @@ function apply() {
 
 export function setNavHideSource(id: string, value: number) {
   sources.set(id, Math.min(1, Math.max(0, value)));
-  apply();
+  queueScrollWrite(flush);
 }
 
 export function clearNavHideSource(id: string) {
   sources.delete(id);
-  apply();
+  queueScrollWrite(flush);
 }

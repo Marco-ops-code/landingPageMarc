@@ -17,16 +17,11 @@ export function PageSheet({
   className?: string;
   children: ReactNode;
 }) {
-  const track = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLElement>(null);
-  usePageRise(track, page, "--page-rise", id, last);
+  usePageRise(page, "--page-rise", id);
 
   return (
-    <div
-      ref={track}
-      className={cn("page-track", last && "is-last")}
-      style={{ zIndex }}
-    >
+    <div className={cn("page-track", last && "is-last")} style={{ zIndex }}>
       <section ref={page} id={id} className={cn("page-sheet", className)}>
         {children}
       </section>
