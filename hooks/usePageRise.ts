@@ -8,12 +8,6 @@ function clamp01(value: number) {
   return Math.min(1, Math.max(0, value));
 }
 
-function trackProgress(track: HTMLElement, viewport: number) {
-  const rect = track.getBoundingClientRect();
-  const travel = Math.max(1, rect.height - viewport);
-  return clamp01(-rect.top / travel);
-}
-
 function revealProgress(page: HTMLElement, viewport: number) {
   const rect = page.getBoundingClientRect();
   const start = viewport * 0.88;
@@ -41,25 +35,22 @@ export function usePageRise(
     }
 
     const mobileQuery = window.matchMedia("(max-width: 767px)");
-    let current = Number.parseFloat(pageEl.style.getPropertyValue(cssVar)) || 0;
     let lastRise = "";
     let lastEvents = "";
 
-    const update = (dt: number) => {
+    const update = () => {
       const viewport = Math.max(
         window.innerHeight,
         document.documentElement.clientHeight,
       );
       const isMobile = mobileQuery.matches;
-      const target = isMobile
+      const rise = isMobile
         ? revealProgress(pageEl, viewport)
-        : trackProgress(trackEl, viewport);
+        : clamp01(
+            -trackEl.getBoundingClientRect().top / Math.max(1, viewport * 1.7),
+          );
 
-      current += (target - current) * (1 - Math.exp(-dt / 0.09));
-      if (Math.abs(target - current) < 0.002) current = target;
-
-      const rise = current >= 0.997 ? 1 : current;
-      const nextRise = rise.toFixed(4);
+      const nextRise = (rise >= 0.997 ? 1 : rise).toFixed(4);
       if (nextRise !== lastRise) {
         lastRise = nextRise;
         pageEl.style.setProperty(cssVar, nextRise);
@@ -73,20 +64,19 @@ export function usePageRise(
 
       if (isMobile) {
         clearNavHideSource(navId);
-      } else {
-        const pageRect = pageEl.getBoundingClientRect();
-        const fade = 120;
-        let navHide = 0;
-        if (pageRect.bottom > 0 && pageRect.top < fade) {
-          navHide =
-            pageRect.top <= 0
-              ? clamp01(pageRect.bottom / fade)
-              : clamp01((fade - pageRect.top) / fade);
-        }
-        setNavHideSource(navId, navHide);
+        return;
       }
 
-      return Math.abs(target - current) > 0.001;
+      const pageRect = pageEl.getBoundingClientRect();
+      const fade = 120;
+      let navHide = 0;
+      if (pageRect.bottom > 0 && pageRect.top < fade) {
+        navHide =
+          pageRect.top <= 0
+            ? clamp01(pageRect.bottom / fade)
+            : clamp01((fade - pageRect.top) / fade);
+      }
+      setNavHideSource(navId, navHide);
     };
 
     const unsubscribe = subscribeScrollFrame(update);
