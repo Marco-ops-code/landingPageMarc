@@ -5,8 +5,6 @@ export const site = {
   firstName: "Marc-Onel",
   lastName: "Volcimus",
   role: "Software Developer & Cybersecurity",
-  tagline: "One person. Three dimensions.",
-  dimensions: ["Lifestyle", "Technology", "Cybersecurity"] as const,
   locationLine: "Based in the digital world",
   description:
     "Software developer and cybersecurity practitioner. I build digital experiences, explore technology, and grow through every challenge.",

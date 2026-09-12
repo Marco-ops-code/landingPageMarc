@@ -126,24 +126,6 @@ body {
   }
 }
 
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--paper);
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  transition: color 0.3s ease, gap 0.3s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .btn-ghost:hover {
-    color: var(--electric);
-    gap: 0.75rem;
-  }
-}
-
 .identity-triptych-page {
   display: flex;
   flex-direction: column;
@@ -2067,8 +2049,7 @@ html[data-nav-hidden] .site-nav {
 }
 
 .identity-swipe-hint,
-.work-swipe-hint,
-.toolkit-swipe-hint {
+.work-swipe-hint {
   display: none;
 }
 
@@ -2357,8 +2338,7 @@ html[data-nav-hidden] .site-nav {
   }
 
   .identity-swipe-hint,
-  .work-swipe-hint,
-  .toolkit-swipe-hint {
+  .work-swipe-hint {
     display: flex;
     align-items: center;
     gap: 0.55rem;
@@ -2371,8 +2351,7 @@ html[data-nav-hidden] .site-nav {
   }
 
   .identity-swipe-hint::before,
-  .work-swipe-hint::before,
-  .toolkit-swipe-hint::before {
+  .work-swipe-hint::before {
     content: "↔";
     color: var(--electric);
   }
@@ -2916,10 +2895,6 @@ html[data-nav-hidden] .site-nav {
     filter: none !important;
   }
 
-  .work-dossier-inner {
-    animation: none;
-  }
-
   .work-platter {
     transform: none;
   }
@@ -2946,9 +2921,6 @@ html[data-nav-hidden] .site-nav {
   .now-liquid::before,
   .now-liquid-core,
   .now-tile::after,
-  .toolkit-card-liquid,
-  .toolkit-card-liquid::before,
-  .toolkit-card-liquid-core,
   .toolkit-card-sheen {
     animation: none !important;
   }
