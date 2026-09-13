@@ -10,8 +10,9 @@
   --line: rgba(245, 247, 255, 0.1);
   /* How far the footer rises over the pinned contact sheet. It doubles as the
      footer height and as the strip contact keeps clear, so the two must never
-     drift apart. */
-  --footer-lift: 9rem;
+     drift apart. It has to stay above the footer's natural content height,
+     otherwise the contact sheet unpins over the last few pixels of the page. */
+  --footer-lift: 16rem;
 }
 
 @theme inline {
@@ -1060,6 +1061,9 @@ body {
 .now-logo .toolkit-mark svg {
   width: 100%;
   height: 100%;
+  /* Without this the filled marks fall back to the SVG default black, which is
+     invisible against the tile. */
+  fill: currentColor;
 }
 
 .now-logo .toolkit-mark svg [fill="none"] {
@@ -1836,7 +1840,12 @@ body {
   min-height: 100dvh;
   pointer-events: auto;
   background: var(--navy);
-  box-shadow: 0 -40px 120px rgba(0, 0, 0, 0.55);
+  /* A wide cast shadow plus a hairline on the leading edge, so the sheet reads
+     as a physical panel lifting over the previous one instead of a hard cut. */
+  box-shadow:
+    0 -1px 0 rgba(245, 247, 255, 0.08),
+    0 -24px 60px rgba(0, 0, 0, 0.5),
+    0 -70px 150px rgba(0, 0, 0, 0.55);
 }
 
 @media (min-width: 768px) {
@@ -1854,7 +1863,6 @@ body {
     min-height: var(--footer-lift);
     flex-direction: column;
     justify-content: center;
-    padding-block: 1rem;
     margin-top: calc(-1 * var(--footer-lift));
     background: var(--navy);
     box-shadow: 0 -30px 80px rgba(0, 0, 0, 0.5);

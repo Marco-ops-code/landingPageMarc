@@ -36,7 +36,11 @@ export function usePageRise(
       );
       const rect = pageEl.getBoundingClientRect();
       const travel = Math.max(1, Math.min(rect.height, viewport));
-      const rise = clamp01((viewport - rect.top) / travel);
+      const raw = clamp01((viewport - rect.top) / travel);
+      // The sheet itself tracks the scroll linearly through sticky positioning,
+      // which is what makes it feel locked. Its contents instead ride an
+      // ease-out so they settle into place rather than following the wheel.
+      const rise = 1 - (1 - raw) ** 3;
 
       const nextRise = (rise >= 0.997 ? 1 : rise).toFixed(3);
       if (nextRise !== lastRise) {
