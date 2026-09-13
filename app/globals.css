@@ -8,11 +8,10 @@
   --glass: rgba(255, 255, 255, 0.06);
   --muted: rgba(245, 247, 255, 0.62);
   --line: rgba(245, 247, 255, 0.1);
-  /* How far the footer rises over the pinned contact sheet. It doubles as the
-     footer height and as the strip contact keeps clear, so the two must never
-     drift apart. It has to stay above the footer's natural content height,
-     otherwise the contact sheet unpins over the last few pixels of the page. */
-  --footer-lift: 16rem;
+  /* The strip the contact sheet keeps clear for the footer that comes to rest
+     over it. Only has to be at least as tall as the footer, so it carries slack
+     for the legal nav wrapping onto a second line at narrow widths. */
+  --footer-reserve: 15rem;
 }
 
 @theme inline {
@@ -1435,7 +1434,7 @@ body {
     gap: 2.4rem;
     /* Keeps the bottom strip free for the footer that comes to rest over this
        sheet, so the call to action never ends up hidden behind it. */
-    padding: 2rem 2.5rem calc(1.75rem + var(--footer-lift));
+    padding: 2rem 2.5rem calc(1.75rem + var(--footer-reserve));
   }
 
   .contact-copy {
@@ -1853,17 +1852,22 @@ body {
     overflow: hidden;
   }
 
-  /* The footer rises over the pinned contact sheet the same way a sheet does,
-     but only by its own height, so it comes to rest instead of covering the
-     whole section. The overlap must equal the footer height exactly: any less
-     and the contact track outlasts the footer, which unpins the sheet at the
-     very end; any more and the page ends on a gap. */
+  /* The dock takes no space, so anchoring the footer to its bottom edge puts the
+     footer's own bottom at the very end of the document. It therefore rises over
+     the pinned contact sheet by exactly its own height and comes to rest there,
+     without that height having to be restated as a fixed value anywhere. */
+  .footer-dock {
+    position: relative;
+    z-index: 90;
+    height: 0;
+  }
+
   .site-footer {
-    display: flex;
-    min-height: var(--footer-lift);
-    flex-direction: column;
-    justify-content: center;
-    margin-top: calc(-1 * var(--footer-lift));
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    /* Same inset as the sections, so the footer lines up with them. */
+    padding-inline: 2.5rem;
     background: var(--navy);
     box-shadow: 0 -30px 80px rgba(0, 0, 0, 0.5);
   }
@@ -2754,9 +2758,9 @@ html[data-nav-hidden] .site-nav {
 
   .site-footer {
     padding-top: 2.5rem;
-    padding-right: max(1.2rem, env(safe-area-inset-right));
+    padding-right: max(1.1rem, env(safe-area-inset-right));
     padding-bottom: max(3rem, calc(2rem + env(safe-area-inset-bottom)));
-    padding-left: max(1.2rem, env(safe-area-inset-left));
+    padding-left: max(1.1rem, env(safe-area-inset-left));
   }
 }
 
@@ -2953,12 +2957,18 @@ html[data-nav-hidden] .site-nav {
     will-change: auto;
   }
 
-  /* Cancels both the footer overlap and the strip contact reserves for it. */
+  /* Drops the footer back into the flow, so contact no longer keeps a strip
+     clear for it either. */
   :root {
-    --footer-lift: 0rem;
+    --footer-reserve: 0rem;
+  }
+
+  .footer-dock {
+    height: auto;
   }
 
   .site-footer {
+    position: static;
     box-shadow: none;
   }
 

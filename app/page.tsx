@@ -31,7 +31,12 @@ export default function Home() {
         <Currently />
         <Contact />
       </main>
-      <Footer />
+      {/* Zero-height dock: it adds nothing to the page, so the footer it holds
+          rests exactly at the document end whatever its own height turns out
+          to be, and rises over the still-pinned contact sheet on the way. */}
+      <div className="footer-dock">
+        <Footer />
+      </div>
     </>
   );
 }
