@@ -1873,6 +1873,24 @@ body {
   }
 }
 
+/* The rise costs the contact sheet the height of the footer, around 240px. On a
+   short window that is over a third of the screen and the section's own content
+   no longer fits in what is left, so the footer scrolls in normally instead. */
+@media (max-height: 779px) {
+  :root {
+    --footer-reserve: 0rem;
+  }
+
+  .footer-dock {
+    height: auto;
+  }
+
+  .site-footer {
+    position: static;
+    box-shadow: none;
+  }
+}
+
 .site-nav {
   transform: translate3d(0, calc(var(--nav-hide, 0) * -120%), 0);
   opacity: calc(1 - var(--nav-hide, 0));

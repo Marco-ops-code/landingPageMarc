@@ -26,27 +26,22 @@ function PaperPlane() {
 
 export function Contact() {
   const [flying, setFlying] = useState(false);
-  const launchTimer = useRef<number>(0);
+  const resetTimer = useRef<number>(0);
 
   useEffect(() => {
-    return () => window.clearTimeout(launchTimer.current);
+    return () => window.clearTimeout(resetTimer.current);
   }, []);
 
+  // The takeoff only decorates the click. Safari and iOS treat window.open as a
+  // popup once it is out of the handler, so navigation stays native and the
+  // animation plays alongside it instead of gating it.
   const launch = () => {
     if (flying) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      window.open(site.portfolio, "_blank", "noopener,noreferrer");
-      return;
-    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     setFlying(true);
-    window.clearTimeout(launchTimer.current);
-    launchTimer.current = window.setTimeout(() => {
-      window.open(site.portfolio, "_blank", "noopener,noreferrer");
-      launchTimer.current = window.setTimeout(() => setFlying(false), 700);
-    }, 920);
+    window.clearTimeout(resetTimer.current);
+    resetTimer.current = window.setTimeout(() => setFlying(false), 1600);
   };
 
   return (
@@ -83,10 +78,11 @@ export function Contact() {
           </ul>
         </div>
 
-        <button
-          type="button"
+        <a
+          href={site.portfolio}
+          target="_blank"
+          rel="noopener noreferrer"
           className={flying ? "contact-plane is-flying" : "contact-plane"}
-          aria-label="Open the portfolio"
           onClick={launch}
         >
           <span className="contact-plane-pad">
@@ -103,7 +99,7 @@ export function Contact() {
               </span>
             </span>
           </span>
-        </button>
+        </a>
       </div>
     </PageSheet>
   );
