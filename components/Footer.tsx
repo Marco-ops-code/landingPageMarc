@@ -1,11 +1,18 @@
+"use client";
+
+import { useRef } from "react";
 import Link from "next/link";
+import { usePageRise } from "@/hooks/usePageRise";
 import { legalNav } from "@/lib/legal";
 import { site } from "@/lib/site";
 
 export function Footer() {
+  const page = useRef<HTMLElement>(null);
+  usePageRise(page, "--page-rise", "footer");
+
   return (
-    <footer role="contentinfo" className="site-footer border-t border-line py-12">
-      <div className="flex flex-col gap-8">
+    <footer ref={page} role="contentinfo" className="site-footer border-t border-line py-12">
+      <div className="site-footer-inner flex flex-col gap-8">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="font-mono text-[11px] tracking-[0.22em] uppercase">

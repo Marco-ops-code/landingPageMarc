@@ -2030,16 +2030,27 @@ body {
     position: relative;
     z-index: 90;
     height: 0;
+    overflow: visible;
+    pointer-events: none;
   }
 
   .site-footer {
+    --page-rise: 0;
     position: absolute;
     inset-inline: 0;
     bottom: 0;
-    /* Same inset as the sections, so the footer lines up with them. */
     padding-inline: 2.5rem;
+    pointer-events: auto;
     background: var(--navy);
-    box-shadow: 0 -30px 80px rgba(0, 0, 0, 0.5);
+    box-shadow:
+      0 -1px 0 rgba(245, 247, 255, 0.08),
+      0 -24px 60px rgba(0, 0, 0, 0.5),
+      0 -70px 150px rgba(0, 0, 0, 0.55);
+  }
+
+  .site-footer-inner {
+    opacity: var(--page-rise);
+    transform: translate3d(0, calc((1 - var(--page-rise)) * 1.2rem), 0);
   }
 }
 
@@ -2056,6 +2067,7 @@ body {
   }
 
   .site-footer {
+    --page-rise: 1;
     position: static;
     box-shadow: none;
   }
@@ -3169,14 +3181,9 @@ html[data-nav-hidden] .site-nav {
   }
 
   .site-footer {
+    --page-rise: 1;
     position: static;
     box-shadow: none;
-  }
-
-  .site-nav {
-    transform: none;
-    opacity: 1;
-    will-change: auto;
   }
 
   .hero-stage {
@@ -3341,11 +3348,16 @@ html[data-nav-hidden] .site-nav {
   text-transform: uppercase;
   color: rgba(245, 247, 255, 0.42);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition:
+    color 0.35s ease,
+    transform 0.35s ease;
 }
 
-.site-footer-legal a:hover {
-  color: var(--electric);
+@media (hover: hover) and (pointer: fine) {
+  .site-footer-legal a:hover {
+    color: var(--electric);
+    transform: translate3d(0, -0.12rem, 0);
+  }
 }
 
 .legal-notice {
